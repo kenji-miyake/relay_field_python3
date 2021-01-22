@@ -19,6 +19,7 @@ Example:
 
 import argparse
 import copy
+import re
 import sys
 
 import genpy
@@ -29,6 +30,15 @@ import std_msgs
 import yaml
 
 __author__ = 'www.kentaro.wada@gmail.com (Kentaro Wada)'
+
+
+def get_member_variables(obj):
+    attrs = [attr for attr in dir(obj) if hasattr(obj, attr)]
+    return [attr for attr in attrs if (not callable(getattr(obj, attr))) and (not attr.startswith("_")) and (not re.match(r"^[A-Z]+$", attr))]
+
+
+def is_primitive_type(t):
+    return type(t) in [int, float, str]
 
 
 def _eval_in_dict_impl(dict_, globals_, locals_):
@@ -44,7 +54,17 @@ def _eval_in_dict_impl(dict_, globals_, locals_):
             if v in ['map']:
                 continue
             try:
-                res[k] = eval(v, globals_, locals_)
+                value = eval(v, globals_, locals_)
+                if is_primitive_type(value):
+                    res[k] = value
+                elif type(value) is list:
+                    res[k] = [_eval_in_dict_impl(
+                        {
+                            member: f'{v}[{i}].{member}' for member in get_member_variables(l)}, globals_, locals_) for i, l in enumerate(value)]
+                else:
+                    d = {
+                        member: f'{v}.{member}' for member in get_member_variables(value)}
+                    res[k] = _eval_in_dict_impl(d, globals_, locals_)
             except NameError:
                 pass
             except SyntaxError:
