@@ -18,16 +18,15 @@ Example:
 
 
 import argparse
-import sys
 import copy
+import sys
 
-import yaml
-
+import genpy
 import roslib
 import rospy
 import rostopic
-import genpy
 import std_msgs
+import yaml
 
 __author__ = 'www.kentaro.wada@gmail.com (Kentaro Wada)'
 
