@@ -16,7 +16,7 @@ Example:
          frame_id: m.data"
 """
 
-from __future__ import print_function
+
 import argparse
 import sys
 import copy
@@ -38,7 +38,7 @@ def _eval_in_dict_impl(dict_, globals_, locals_):
         type_ = type(v)
         if type_ is dict:
             res[k] = _eval_in_dict_impl(v, globals_, locals_)
-        elif (type_ is str) or (type_ is unicode):
+        elif type_ is str:
             try:
                 res[k] = eval(v, globals_, locals_)
             except NameError:
@@ -79,7 +79,7 @@ class RelayField(object):
             help='use the TCP_NODELAY transport hint when subscribing to topics'
             )
 
-        # get and strip out ros args first                                                                                                                      
+        # get and strip out ros args first
         argv = rospy.myargv()
         args = parser.parse_args(argv[1:])
 
