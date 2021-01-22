@@ -61,23 +61,23 @@ class RelayField(object):
                 '/chatter /header std_msgs/Header\n\t'
                 '"seq: 0\n\t stamp:\n\t   secs: 0\n\t   nsecs: 0\n\t   '
                 'frame_id: m.data"\n\n'
-                )
             )
+        )
         parser.add_argument('input', help='Input topic or topic field.')
         parser.add_argument('output_topic', help='Output topic.')
         parser.add_argument('output_type', help='Output topic type.')
         parser.add_argument(
             'expression',
             help='Python expression to apply on the input message \'m\'.'
-            )
+        )
         parser.add_argument(
             '--wait-for-start', action='store_true',
             help='Wait for input messages.'
-            )
+        )
         parser.add_argument(
             '--tcpnodelay', dest='tcp_nodelay', action='store_true',
             help='use the TCP_NODELAY transport hint when subscribing to topics'
-            )
+        )
 
         # get and strip out ros args first
         argv = rospy.myargv()
@@ -94,7 +94,8 @@ class RelayField(object):
 
         self.output_class = roslib.message.get_message_class(args.output_type)
 
-        self.sub = rospy.Subscriber(input_topic, input_class, self.callback, tcp_nodelay=args.tcp_nodelay)
+        self.sub = rospy.Subscriber(
+            input_topic, input_class, self.callback, tcp_nodelay=args.tcp_nodelay)
         self.pub = rospy.Publisher(args.output_topic, self.output_class,
                                    queue_size=1)
 
